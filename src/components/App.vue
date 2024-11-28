@@ -4,6 +4,11 @@ const listPorts = () => {
     console.log(ports);
   });
 };
+const initDB = () => {
+  window.db.init().then((database) => {
+    console.log(database);
+  });
+};
 </script>
 
 <template>
@@ -11,6 +16,7 @@ const listPorts = () => {
     <h1>SkinSonix App</h1>
     <p>Here is the main content of the app</p>
     <button @click="listPorts">List Ports</button>
+    <button @click="initDB">Initialize Database</button>
   </div>
 </template>
 
