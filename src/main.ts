@@ -1,15 +1,9 @@
-import { ipcMain } from 'electron';
-import { SerialPort } from "serialport";
-import DBManager from "./db/DBManager";
+import initElectronApp from "./main/config";
+import initTreatmentsHandlers from "./main/treatmentHandlers";
+import initSerialportHandlers from "./main/serialportHandlers";
 
-
-ipcMain.handle('db-init', async () => {
-    return DBManager.init();
-});
-
-ipcMain.handle('list-ports', async () => {
-    // return "poop"
-    return SerialPort.list();
-});
+initElectronApp();
+initTreatmentsHandlers();
+initSerialportHandlers()
 
 

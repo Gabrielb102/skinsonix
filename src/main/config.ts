@@ -1,6 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import started from 'electron-squirrel-startup';
+import DBManager from "../db/DBManager";
 
 const initElectronApp = () => {
 
@@ -31,6 +32,8 @@ const initElectronApp = () => {
             createWindow();
         }
     });
+
+    DBManager.init();
 }
 
 // In this file you can include the rest of your app's specific main process
@@ -56,3 +59,5 @@ const createWindow = () => {
     // Open the DevTools.
     mainWindow.webContents.openDevTools();
 };
+
+export default initElectronApp;
