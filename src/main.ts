@@ -1,6 +1,6 @@
-import initElectronApp from "./main/config";
-import initTreatmentsHandlers from "./main/treatmentHandlers";
-import initSerialportHandlers from "./main/serialportHandlers";
+import initElectronApp from "./electron/main/config";
+import initTreatmentsHandlers from "./electron/main/treatmentHandlers";
+import initSerialportHandlers from "./electron/main/serialportHandlers";
 
 initElectronApp();
 initTreatmentsHandlers();

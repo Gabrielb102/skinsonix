@@ -1,11 +1,9 @@
-import { app, BrowserWindow } from 'electron';
+import {app, BrowserWindow} from 'electron';
 import path from 'path';
 import started from 'electron-squirrel-startup';
-import DBManager from "../db/DBManager";
+import DBManager from "@/db/DBManager";
 
 const initElectronApp = () => {
-
-
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
     if (started) {
         app.quit();

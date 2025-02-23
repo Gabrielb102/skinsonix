@@ -1,5 +1,5 @@
 import {ipcMain} from 'electron';
-import DBManager from "../db/DBManager";
+import DBManager from "@/db/DBManager";
 
 const db = DBManager.init();
 
