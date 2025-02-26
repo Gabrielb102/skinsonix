@@ -3,25 +3,43 @@
   "productName": "skinsonix-app",
   "version": "1.0.0",
   "description": "My Electron application description",
-  "main": ".vite/build/main.js",
+  "main": "dist-electron/main/main.js",
   "type": "module",
+  "license": "UNLICENSED",
+  "keywords": [
+    "skinsonix",
+    "electron",
+    "vue",
+    "vite"
+  ],
+  "author": {
+    "name": "Gabriel Burgos",
+    "email": "gabrielb102@gmail.com"
+  },
+  "build": {
+    "appId": "skinsonix.app"
+  },
+  "debug": {
+    "env": {
+      "VITE_DEV_SERVER_URL": "http://127.0.0.1:3344/"
+    }
+  },
   "scripts": {
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
+    "dev": "vite dev",
+    "build": "vite build && electron-builder",
+    "preview": "vite preview",
     "lint": "eslint --ext .ts,.tsx .",
     "rebuild-serialport": "electron-rebuild -f -w serialport",
     "rebuild-sqlite": "electron-rebuild -f -w sqlite3"
   },
   "devDependencies": {
-    "@types/node": "^22.13.4",
-    "@typescript-eslint/eslint-plugin": "^5.62.0",
-    "@typescript-eslint/parser": "^5.62.0",
     "@primevue/themes": "^4.2.5",
     "@serialport/bindings-cpp": "^12.0.1",
     "@serialport/stream": "^12.0.0",
     "@tailwindcss/vite": "^4.0.8",
+    "@types/node": "^22.13.5",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/tsconfig": "^0.7.0",
     "electron": "33.2.1",
@@ -32,17 +50,12 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-vue": "^9.31.0",
     "ts-node": "^10.9.2",
-    "typescript": "~5.0.4",
     "vite": "^5.4.11",
+    "vite-plugin-electron": "^0.29.0",
     "vue-eslint-parser": "^9.4.3"
   },
-  "keywords": [],
-  "author": {
-    "name": "Gabriel Burgos",
-    "email": "gabrielb102@gmail.com"
-  },
-  "license": "MIT",
   "dependencies": {
+    "@primeuix/themes": "^1.0.0",
     "electron-reload": "^2.0.0-alpha.1",
     "electron-squirrel-startup": "^1.0.1",
     "primeicons": "^7.0.0",
@@ -52,6 +65,8 @@
     "start": "^5.1.0",
     "tailwindcss": "^4.0.7",
     "tailwindcss-primeui": "^0.4.0",
-    "vue": "^3.5.13"
+    "vite-plugin-electron-renderer": "^0.14.6",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
   }
 }

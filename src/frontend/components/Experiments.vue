@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup >
 import { ref, watch } from 'vue';
 
 const redValue = ref(0);
@@ -26,7 +26,7 @@ const message = new Uint8Array([
 ]);
 
   // Write the message to the serial port
-  window.wand.write(message, (err: Error) => {
+  window.wand.write(message, err => {
     if (err) {
       console.error('Error writing to port:', err.message);
     }

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 
 </script>
 
@@ -9,7 +9,3 @@
   </PVPanel>
 
 </template>
-
-<style scoped>
-
-</style>
