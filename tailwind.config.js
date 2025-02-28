@@ -1,5 +1,12 @@
 import primePlugin from 'tailwindcss-primeui';
 
-module.exports = {
-  plugins: [primePlugin]
-};
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{vue,js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [primePlugin],
+}

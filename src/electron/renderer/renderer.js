@@ -1,21 +1,27 @@
 import { createApp } from 'vue';
+import router from '@frontend/routing/router';
 import '@/frontend/index.css';
 import App from '@components/App.vue';
 import 'primeicons/primeicons.css';
 import PrimeVue from 'primevue/config';
-import Aura from '@primeuix/themes/aura';
+import SkinSonixTheme from "@frontend/config/theme.js";
+import registerComponents from "@frontend/config/components.js";
+
 
 const app = createApp(App);
 
+
 app.use(PrimeVue, {
   theme: {
-    preset: Aura
+    preset: SkinSonixTheme,
+    options: {
+      darkModeSelector: false,
+    }
   }
 });
 
-import {Panel, Button} from "primevue";
+registerComponents(app);
 
-app.component('PPanel', Panel);
-app.component('PButton', Button);
+app.use(router);
 
 app.mount('#app');

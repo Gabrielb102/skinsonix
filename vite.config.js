@@ -6,10 +6,9 @@ import electronPlugin from "vite-plugin-electron/simple";
 import pkg from "./package.json";
 
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = path.dirname(__filename);
 
 const isBuild = process.env.NODE_ENV === 'production' || process.env.VSCODE_DEBUG;
 
@@ -79,6 +78,7 @@ export default defineConfig({
       '@electron': path.resolve(__dirname, 'src/electron'),
       '@frontend': path.resolve(__dirname, 'src/frontend'),
       '@views': path.resolve(__dirname, 'src/frontend/views'),
+      '@images': path.resolve(__dirname, 'src/frontend/assets/images'),
     },
   },
   server: {
