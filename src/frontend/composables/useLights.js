@@ -5,7 +5,6 @@ const openWandPort = () => {
 
   const openPort = () => {
     window.wand.list().then((ports) => {
-      console.log("Available ports: ", ports);
     });
     window.wand.openPort().then((port) => {
       console.log("Successfully opened port: ", port);

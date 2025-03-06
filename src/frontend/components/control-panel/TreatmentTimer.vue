@@ -1,5 +1,5 @@
 <script setup>
-import {computed, ref} from "vue";
+import {computed, ref, watchEffect} from "vue";
 import BigTime from "@components/control-panel/BigTime.vue";
 import SectionTime from "@components/control-panel/SectionTime.vue";
 
@@ -27,6 +27,11 @@ const bigTimeDisplay = ref(null);
 const sectionTimeDisplay = ref(null);
 const isPaused = ref(false);
 const isRunning = computed(() => bigTimeDisplay?.value?.isRunning ?? false);
+
+watchEffect(() => {
+  console.log("Is Running: ", isRunning.value);
+  console.log("Is Paused: ", isPaused.value);
+});
 
 const start = () => {
   if (bigTimeDisplay.value.isRunning) {
@@ -56,9 +61,9 @@ const stop = () => {
     <SectionTime ref="sectionTimeDisplay" :time="sectionTime"/>
     <slot/>
     <div class="flex flex-row gap-10 w-full mt-5 justify-center">
-      <PrimeButton @click="start" icon="pi pi-play" label="Start" severity="success" size="large" disabled="!isRunning"/>
-      <PrimeButton v-if="isRunning && !isPaused" @click="pause" icon="pi pi-pause" label="Pause" severity="secondary" size="large"/>
-      <PrimeButton v-else @click="stop" icon="pi pi-stop" label="Stop" severity="danger" size="large" :disabled="isRunning"/>
+      <PrimeButton @click="start" icon="pi pi-play" label="Start" severity="success" size="large" :disabled="isRunning.value"/>
+      <PrimeButton v-if="isRunning.value && !isPaused.value" @click="pause" icon="pi pi-pause" label="Pause" severity="secondary" size="large"/>
+      <PrimeButton v-else @click="stop" icon="pi pi-stop" label="Stop" severity="danger" size="large" :disabled="!isRunning.value"/>
     </div>
   </div>
 </template>

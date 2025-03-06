@@ -16,7 +16,7 @@ export function useTimer(durationInSeconds) {
     if (!timer) {
       const totalDuration = Math.ceil(timeLeft.value / 1000);
       startTime = new Date().getTime() - (totalDuration * 1000 - timeLeft.value);
-      timer = setInterval(step, 250);
+      timer = setInterval(step, 1000);
     }
   };
 
@@ -39,7 +39,7 @@ export function useTimer(durationInSeconds) {
   };
 
   const step = () => {
-    const now = Math.max(0, timeLeft.value - (new Date().getTime() - startTime));
+    const now = Math.max(0, timeLeft.value - 1);
     minutes.value = Math.floor(now / 60000);
     seconds.value = Math.floor(now / 1000) % 60;
     timeLeft.value = now;

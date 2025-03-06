@@ -2,13 +2,13 @@ var __defProp = Object.defineProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 import { app, BrowserWindow, ipcMain } from "electron";
-import path, { dirname } from "path";
+import path from "path";
 import started from "electron-squirrel-startup";
 import { fileURLToPath } from "url";
 import { Sequelize, DataTypes } from "sequelize";
 import { SerialPort } from "serialport";
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = path.dirname(__filename);
 process.env.DIST = path.join(__dirname, "../../dist");
 const initElectronApp = () => {
   if (started) {
@@ -181,7 +181,8 @@ class SerialPortManager {
     return SerialPort.list();
   }
   async openPort() {
-    if (this.wandPort && this.wandPort.isOpen) {
+    var _a;
+    if ((_a = this.wandPort) == null ? void 0 : _a.isOpen) {
       return { success: true, path: this.wandPort.path, baudRate: this.wandPort.baudRate, isOpen: this.wandPort.isOpen };
     }
     try {
@@ -201,25 +202,25 @@ class SerialPortManager {
           });
         });
         this.wandPort.on("error", (err) => {
-          reject({
+          reject(Error({
             success: false,
             error: {
               message: err.message,
               code: err.code,
               stack: err.stack
             }
-          });
+          }));
         });
       });
     } catch (err) {
-      throw {
+      throw Error({
         success: false,
         error: {
           message: err.message,
           code: err.code,
           stack: err.stack
         }
-      };
+      });
     }
   }
   async writeWandPort(data) {
