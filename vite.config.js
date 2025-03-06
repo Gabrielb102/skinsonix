@@ -1,14 +1,9 @@
 import {defineConfig} from 'vite';
-import path from 'path';
 import vue from '@vitejs/plugin-vue';
 import tailwindcss from "@tailwindcss/vite";
 import electronPlugin from "vite-plugin-electron/simple";
 import pkg from "./package.json";
-
 import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const isBuild = process.env.NODE_ENV === 'production' || process.env.VSCODE_DEBUG;
 
@@ -73,13 +68,16 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'),
-      '@components': path.resolve(__dirname, 'src/frontend/components'),
-      '@electron': path.resolve(__dirname, 'src/electron'),
-      '@frontend': path.resolve(__dirname, 'src/frontend'),
-      '@views': path.resolve(__dirname, 'src/frontend/views'),
-      '@images': path.resolve(__dirname, 'src/frontend/assets/images'),
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@components': fileURLToPath(new URL('./src/frontend/components', import.meta.url)),
+      '@electron': fileURLToPath(new URL('./src/electron', import.meta.url)),
+      '@frontend': fileURLToPath(new URL('./src/frontend', import.meta.url)),
+      '@views': fileURLToPath(new URL('./src/frontend/views', import.meta.url)),
+      '@images': fileURLToPath(new URL('./src/frontend/assets/images', import.meta.url)),
     },
+  },
+  rollupOptions: {
+    external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
   },
   server: {
     hmr: true

@@ -10,6 +10,7 @@ import registerComponents from "@frontend/config/components.js";
 
 const app = createApp(App);
 
+app.use(router);
 
 app.use(PrimeVue, {
   theme: {
@@ -21,7 +22,5 @@ app.use(PrimeVue, {
 });
 
 registerComponents(app);
-
-app.use(router);
 
 app.mount('#app');

@@ -55,19 +55,19 @@
     "vue-eslint-parser": "^9.4.3"
   },
   "dependencies": {
-    "@esbuild/darwin-arm64": "^0.25.0",
     "@primeuix/themes": "^1.0.0",
-    "@rollup/rollup-darwin-arm64": "^4.34.8",
     "electron-reload": "^2.0.0-alpha.1",
     "electron-squirrel-startup": "^1.0.1",
     "pinia": "^3.0.1",
     "primeicons": "^7.0.0",
     "primevue": "^4.3.1",
+    "sequelize": "^6.37.6",
     "serialport": "^12.0.0",
     "sqlite3": "^5.1.7",
     "start": "^5.1.0",
     "tailwindcss": "^4.0.7",
     "tailwindcss-primeui": "^0.5.1",
+    "uuid": "^11.1.0",
     "vite-plugin-electron-renderer": "^0.14.6",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"

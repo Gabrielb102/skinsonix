@@ -1,10 +1,9 @@
 <script setup>
-
 </script>
 
 
 <template>
-  <div class="p-8 flex flex-col h-screen w-screen">
+  <div class="flex flex-col h-screen w-screen overflow-hidden">
     <router-view/>
   </div>
 </template>

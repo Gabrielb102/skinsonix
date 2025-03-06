@@ -6,5 +6,8 @@ electron.contextBridge.exposeInMainWorld("wand", {
   write: (data) => electron.ipcRenderer.invoke("write", data)
 });
 electron.contextBridge.exposeInMainWorld("db", {
-  init: () => electron.ipcRenderer.invoke("db-init")
+  getTreatments: (params) => electron.ipcRenderer.invoke("treatments-get", params),
+  createTreatment: (treatment) => electron.ipcRenderer.invoke("treatments-create", treatment),
+  updateTreatment: (treatment) => electron.ipcRenderer.invoke("treatments-update", treatment),
+  deleteTreatment: (id) => electron.ipcRenderer.invoke("treatments-delete", id)
 });

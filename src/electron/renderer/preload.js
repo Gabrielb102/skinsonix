@@ -7,5 +7,8 @@ contextBridge.exposeInMainWorld('wand', {
 })
 
 contextBridge.exposeInMainWorld('db', {
-    init: () => ipcRenderer.invoke('db-init')
+    getTreatments: (params) => ipcRenderer.invoke('treatments-get', params),
+    createTreatment: (treatment) => ipcRenderer.invoke('treatments-create', treatment),
+    updateTreatment: (treatment) => ipcRenderer.invoke('treatments-update', treatment),
+    deleteTreatment: (id) => ipcRenderer.invoke('treatments-delete', id)
 })

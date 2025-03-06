@@ -1,54 +1,33 @@
 <script setup>
+import { ref, onMounted, watch } from "vue";
+import TreatmentButton from "@components/buttons/TreatmentButton.vue"
 
-import TreatmentButton from "@components/buttons/TreatmentButton.vue";
+const treatments = ref([]);
 
-const dummyTreatments = [
-  {
-    id: 1,
-    name: 'Treatment 1',
-    description: 'Description of Treatment 1',
-  },
-  {
-    id: 2,
-    name: 'Treatment 2',
-    description: 'Description of Treatment 2',
-  },
-  {
-    id: 3,
-    name: 'Treatment 3',
-    description: 'Description of Treatment 3',
-  },
-  {
-    id: 4,
-    name: 'Treatment 4',
-    description: 'Description of Treatment 4',
-  },
-  {
-    id: 5,
-    name: 'Treatment 5',
-    description: 'Description of Treatment 5',
-  },
-  {
-    id: 6,
-    name: 'Treatment 5',
-    description: 'Description of Treatment 5',
-  },
-]
+onMounted(async () => {
+  treatments.value = await window.db.getTreatments()
+});
+
+watch(treatments, () => {
+  console.log(treatments.value)
+});
 
 </script>
 
 <template>
 
-  <div class="flex flex-row items-center">
-    <router-link to="/">
-      <PrimePanel icon="pi pi-angle-left" severity="contrast" variant="text" rounded/>
-    </router-link>
-    <span class="text-2xl font-sans font-bold text-black">
+  <div class="p-8 h-full w-full flex flex-col">
+    <div class="flex flex-row items-center">
+      <router-link to="/">
+        <PrimeButton icon="pi pi-angle-left" severity="contrast" variant="text" rounded/>
+      </router-link>
+      <span class="text-2xl font-sans font-bold text-black">
         Select a Treatment
       </span>
-  </div>
-  <div class="flex flex-wrap  border border-surface-300 rounded-xl h-full w-full place-content-center">
-    <TreatmentButton v-for="treatment of dummyTreatments" :treatment/>
+    </div>
+    <div class="flex flex-wrap grow border border-surface-300 rounded-xl w-full place-content-center">
+      <TreatmentButton v-for="treatment of treatments" :treatment/>
+    </div>
   </div>
 
 </template>

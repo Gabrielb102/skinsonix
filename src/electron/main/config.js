@@ -1,13 +1,11 @@
 import {app, BrowserWindow} from 'electron';
 import path from 'path';
 import started from 'electron-squirrel-startup';
-import DBManager from "../../db/DBManager";
 
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = path.dirname(__filename);
 process.env.DIST = path.join(__dirname, '../../dist')
 
 const initElectronApp = () => {
@@ -37,8 +35,6 @@ const initElectronApp = () => {
             createWindow();
         }
     });
-
-    DBManager.init();
 }
 
 // In this file you can include the rest of your app's specific main process

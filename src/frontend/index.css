@@ -1,2 +1,15 @@
 @import "tailwindcss";
 @import "tailwindcss-primeui";
+
+@font-face {
+    font-family: 'Inter';
+    src: url('@/frontend/assets/fonts/inter-variable-weight.ttf') format('truetype');
+}
+
+@theme {
+    --font-sans: 'Inter', sans-serif;
+}
+
+html {
+    font-size: 30px;
+}

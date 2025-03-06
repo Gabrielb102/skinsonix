@@ -4,136 +4,9 @@ var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "sy
 import { app, BrowserWindow, ipcMain } from "electron";
 import path, { dirname } from "path";
 import started from "electron-squirrel-startup";
-import sqlite3 from "sqlite3";
 import { fileURLToPath } from "url";
+import { Sequelize, DataTypes } from "sequelize";
 import { SerialPort } from "serialport";
-class DBManager {
-  static init() {
-    const db = new sqlite3.Database("./src/db/skinsonix.db", sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
-      if (err) {
-        console.log("Error opening / creating database");
-        if (err.message) {
-          console.error(err.message);
-        }
-      } else {
-        console.log("Connected to the skinsonix database.");
-        this.createTables(db);
-        this.checkDefaultData(db, (exists) => {
-          if (!exists) {
-            console.log("Inserting default data");
-            this.insertDefaultData(db);
-          }
-        });
-      }
-    });
-    return db;
-  }
-  static createTables(db) {
-    db.exec(`
-        CREATE TABLE IF NOT EXISTS treatments
-        (
-            id
-            INTEGER
-            PRIMARY
-            KEY
-            AUTOINCREMENT,
-            name
-            TEXT
-            NOT
-            NULL,
-            description
-            TEXT
-            NULL
-        );
-
-        CREATE TABLE IF NOT EXISTS treatment_phases
-        (
-            id
-            INTEGER
-            PRIMARY
-            KEY
-            AUTOINCREMENT,
-            treatment_id
-            INTEGER
-            NOT
-            NULL,
-            area
-            TEXT
-            NOT
-            NULL,
-            duration
-            INTEGER
-            DEFAULT
-            20,
-            red_intensity
-            INTEGER
-            DEFAULT
-            100,
-            blue_intensity
-            INTEGER
-            DEFAULT
-            100,
-            volume
-            INTEGER
-            DEFAULT
-            50,
-            treatment_pattern
-            TEXT
-            DEFAULT
-            'sine_increasing',
-            phase_order
-            INTEGER
-            NOT
-            NULL,
-            FOREIGN
-            KEY
-        (
-            treatment_id
-        ) REFERENCES treatments
-        (
-            id
-        )
-            );
-    `, (err) => {
-      if (err) {
-        console.error("Error creating tables:", err.message);
-      }
-    });
-  }
-  static insertDefaultData(db) {
-    db.exec(`
-        INSERT INTO treatments (id, name, description)
-        VALUES (1, 'SkinSonix Facial',
-                'The original SkinSonix treatment, a relaxing combination of low frequency waves and LED light exposure. A great starting point for those new to low frequency and LED treatments, and a timeless option for experienced individuals.');
-
-        INSERT INTO treatment_phases (treatment_id, area, phase_order)
-        VALUES (1, 'up_right_side', 1),
-               (1, 'forehead', 2),
-               (1, 'up_left_side', 3),
-               (1, 'left_jaw', 4),
-               (1, 'chin', 5),
-               (1, 'right_jaw', 6),
-               (1, 'up_lip', 7),
-               (1, 'nose', 8),
-               (1, 'left_neck', 9),
-               (1, 'right_neck', 10);
-    `, (err) => {
-      if (err) {
-        console.error("Error inserting default data:", err.message);
-      }
-    });
-  }
-  static checkDefaultData(db, callback) {
-    db.get("SELECT * FROM treatments", (err, row) => {
-      if (err) {
-        console.error(err.message);
-        callback(false);
-      } else {
-        callback(!!row);
-      }
-    });
-  }
-}
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 process.env.DIST = path.join(__dirname, "../../dist");
@@ -152,7 +25,6 @@ const initElectronApp = () => {
       createWindow();
     }
   });
-  DBManager.init();
 };
 const createWindow = () => {
   const mainWindow = new BrowserWindow({
@@ -168,19 +40,137 @@ const createWindow = () => {
     mainWindow.loadFile(path.join(process.env.DIST, "../renderer/index.html"));
   }
 };
-DBManager.init();
+const sequelize = new Sequelize({
+  dialect: "sqlite",
+  storage: "./src/db/skinsonix.db",
+  logging: false
+});
+const Treatment = sequelize.define("Treatment", {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  }
+}, {
+  tableName: "treatments",
+  timestamps: false
+});
+Treatment.sync();
+const TreatmentPhase = sequelize.define("TreatmentPhase", {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  treatment_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: "Treatment",
+      key: "id"
+    }
+  },
+  area: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  duration: {
+    type: DataTypes.INTEGER,
+    defaultValue: 20
+  },
+  red_start_intensity: {
+    type: DataTypes.INTEGER,
+    defaultValue: 100
+  },
+  blue_start_intensity: {
+    type: DataTypes.INTEGER,
+    defaultValue: 100
+  },
+  red_end_intensity: {
+    type: DataTypes.INTEGER,
+    defaultValue: 100
+  },
+  blue_end_intensity: {
+    type: DataTypes.INTEGER,
+    defaultValue: 100
+  },
+  start_frequency: {
+    type: DataTypes.INTEGER,
+    defaultValue: 660
+  },
+  end_frequency: {
+    type: DataTypes.INTEGER,
+    defaultValue: 660
+  },
+  phase_order: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  }
+}, {
+  tableName: "treatment_phases",
+  timestamps: false
+});
+Treatment.hasMany(TreatmentPhase, {
+  foreignKey: "treatment_id"
+});
+TreatmentPhase.belongsTo(Treatment, {
+  foreignKey: "treatment_id"
+});
+TreatmentPhase.sync();
 const initTreatmentsHandlers = () => {
-  ipcMain.handle("treatments-create", async () => {
-    return DBManager.init();
+  ipcMain.handle("treatments-create", async (event, { name, description, phases }) => {
+    const treatment = await Treatment.create({ name, description });
+    for (const phase of phases) {
+      await TreatmentPhase.create({ ...phase, TreatmentId: treatment.id });
+    }
+    return treatment;
   });
-  ipcMain.handle("treatments-read", async () => {
-    return DBManager.init();
+  ipcMain.handle("treatments-get", async (event, params) => {
+    var _a;
+    const options = {
+      include: [{
+        model: TreatmentPhase
+      }],
+      nest: true
+    };
+    if (params) {
+      options["where"] = params;
+    }
+    const treatments = await Treatment.findAll(options);
+    if (params == null ? void 0 : params.id) {
+      return ((_a = treatments[0]) == null ? void 0 : _a.toJSON()) ?? null;
+    }
+    return treatments.map((t) => t.toJSON());
   });
-  ipcMain.handle("treatments-update", async () => {
-    return DBManager.init();
+  ipcMain.handle("treatments-update", async (event, { id, name, description, phases }) => {
+    await Treatment.update({ name, description }, { where: { id } });
+    await TreatmentPhase.destroy({ where: { TreatmentId: id } });
+    const existingPhases = await TreatmentPhase.findAll({ where: { TreatmentId: id } });
+    const existingPhaseIds = existingPhases.map((p) => p.id);
+    const newPhaseIds = phases.map((p) => p.id).filter((id2) => id2);
+    for (const phase of phases) {
+      if (phase.id) {
+        await TreatmentPhase.update(phase, { where: { id: phase.id } });
+      } else {
+        await TreatmentPhase.create({ ...phase, TreatmentId: id });
+      }
+    }
+    const phasesToDelete = existingPhaseIds.filter((id2) => !newPhaseIds.includes(id2));
+    if (phasesToDelete.length) {
+      await TreatmentPhase.destroy({ where: { id: phasesToDelete } });
+    }
   });
-  ipcMain.handle("treatments-delete", async () => {
-    return DBManager.init();
+  ipcMain.handle("treatments-delete", async (event, id) => {
+    await TreatmentPhase.destroy({ where: { TreatmentId: id } });
+    await Treatment.destroy({ where: { id } });
   });
 };
 class SerialPortManager {
@@ -191,23 +181,46 @@ class SerialPortManager {
     return SerialPort.list();
   }
   async openPort() {
-    if (!this.wandPort) {
-      this.wandPort = new SerialPort({ path: "COM3", baudRate: 9600 });
+    if (this.wandPort && this.wandPort.isOpen) {
+      return { success: true, path: this.wandPort.path, baudRate: this.wandPort.baudRate, isOpen: this.wandPort.isOpen };
     }
-    return await new Promise((resolve, reject) => {
-      this.wandPort.on("open", () => {
-        resolve({
-          success: true,
-          path: this.wandPort.path,
-          baudRate: this.wandPort.baudRate,
-          isOpen: this.wandPort.isOpen
+    try {
+      const ports = await SerialPort.list();
+      const wandPort = ports.find((port) => port.path === "COM3");
+      if (!wandPort) {
+        throw new Error("COM3 port not found");
+      }
+      this.wandPort = new SerialPort({ path: wandPort.path, baudRate: 9600 });
+      return new Promise((resolve, reject) => {
+        this.wandPort.on("open", () => {
+          resolve({
+            success: true,
+            path: this.wandPort.path,
+            baudRate: this.wandPort.baudRate,
+            isOpen: this.wandPort.isOpen
+          });
+        });
+        this.wandPort.on("error", (err) => {
+          reject({
+            success: false,
+            error: {
+              message: err.message,
+              code: err.code,
+              stack: err.stack
+            }
+          });
         });
       });
-      this.wandPort.on("error", (err) => {
-        console.error(err);
-        reject(Error(err.message));
-      });
-    });
+    } catch (err) {
+      throw {
+        success: false,
+        error: {
+          message: err.message,
+          code: err.code,
+          stack: err.stack
+        }
+      };
+    }
   }
   async writeWandPort(data) {
     if (this.wandPort) {

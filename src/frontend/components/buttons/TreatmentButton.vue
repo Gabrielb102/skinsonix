@@ -23,7 +23,7 @@ const routeInfo = {
 
 <template>
   <router-link :to="routeInfo">
-    <PrimePanel
+    <PrimeButton
         class="m-2 h-12 w-36 p-3" severity="primary"
         :label="treatment['name']"
     />
