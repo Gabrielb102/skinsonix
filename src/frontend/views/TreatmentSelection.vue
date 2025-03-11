@@ -8,10 +8,6 @@ onMounted(async () => {
   treatments.value = await window.db.getTreatments()
 });
 
-watch(treatments, () => {
-  console.log(treatments.value)
-});
-
 </script>
 
 <template>

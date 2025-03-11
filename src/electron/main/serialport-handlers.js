@@ -11,7 +11,8 @@ class SerialPortManager {
     async openPort() { if (this.wandPort?.isOpen) { return { success: true, path: this.wandPort.path, baudRate: this.wandPort.baudRate, isOpen: this.wandPort.isOpen }; }
         try {
             const ports = await SerialPort.list();
-            const wandPort = ports.find(port => port.path === "COM3");
+            // const wandPort = ports.find(port => port.path === "COM3"); // for Windows
+            const wandPort = ports.find(port => port.path === "/dev/tty.usbmodem00071748741"); // for Mac
 
             if (!wandPort) {
                 throw new Error("COM3 port not found");

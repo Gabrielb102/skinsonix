@@ -11,5 +11,6 @@
 }
 
 html {
-    font-size: 30px;
+    /*font-size: 30px; for windows  */
+    font-size: 22px;
 }

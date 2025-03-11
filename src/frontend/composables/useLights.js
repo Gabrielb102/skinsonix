@@ -4,8 +4,6 @@ const openWandPort = () => {
   const isPluggedIn = ref(false);
 
   const openPort = () => {
-    window.wand.list().then((ports) => {
-    });
     window.wand.openPort().then((port) => {
       console.log("Successfully opened port: ", port);
       isPluggedIn.value = true;
@@ -28,8 +26,8 @@ export function useLights() {
   const isPluggedIn = openWandPort();
   const isOn = ref(false);
 
-  const redValue = ref(0);
-  const blueValue = ref(0);
+  const redValue = ref(127);
+  const blueValue = ref(127);
 
   // function to write new values to wand
   const writeWandLight = (redValue, blueValue) => {

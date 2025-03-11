@@ -10,7 +10,6 @@ const id = route.query.treatmentID;
 const treatment = ref(null);
 onMounted(async () => {
   treatment.value = await window.db.getTreatments({id});
-  console.log("Treatment: ", treatment.value);
 });
 
 

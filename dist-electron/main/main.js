@@ -187,7 +187,7 @@ class SerialPortManager {
     }
     try {
       const ports = await SerialPort.list();
-      const wandPort = ports.find((port) => port.path === "COM3");
+      const wandPort = ports.find((port) => port.path === "/dev/tty.usbmodem00071748741");
       if (!wandPort) {
         throw new Error("COM3 port not found");
       }
