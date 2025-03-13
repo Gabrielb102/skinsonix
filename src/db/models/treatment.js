@@ -17,10 +17,9 @@ const Treatment = sequelize.define('Treatment', {
     allowNull: true
   }
 }, {
+  modelName: 'Treatment',
   tableName: 'treatments',
-  timestamps: false
+  timestamps: false,
 });
-
-Treatment.sync();
 
 export default Treatment;

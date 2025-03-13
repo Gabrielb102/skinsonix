@@ -38,11 +38,9 @@ const isStopped = ref(false);
 
 const start = () => {
   if (isStarted.value) {
-    console.log("Resuming, isStarted: ", isStarted.value);
     bigTimeDisplay['value']?.resume();
     sectionTimeDisplay['value']?.resume();
   } else {
-    console.log("Starting, isStarted: ", isStarted.value);
     bigTimeDisplay['value']?.start(totalTime.value);
     sectionTimeDisplay['value']?.start(sectionTime.value);
   }

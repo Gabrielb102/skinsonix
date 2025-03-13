@@ -8,6 +8,13 @@ onMounted(async () => {
   treatments.value = await window.db.getTreatments()
 });
 
+const manualTreatment = {
+  id: 0,
+  name: "Manual",
+  description: "Manually select a treatment",
+  phases: []
+}
+
 </script>
 
 <template>
@@ -23,6 +30,7 @@ onMounted(async () => {
     </div>
     <div class="flex flex-wrap grow border border-surface-300 rounded-xl w-full place-content-center">
       <TreatmentButton v-for="treatment of treatments" :treatment/>
+      <TreatmentButton severity="secondary" :treatment="manualTreatment"/>
     </div>
   </div>
 

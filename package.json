@@ -1,7 +1,7 @@
 {
   "name": "skinsonix-app",
   "productName": "skinsonix-app",
-  "version": "1.0.0",
+  "version": "1.0.6",
   "description": "My Electron application description",
   "main": "dist-electron/main/main.js",
   "type": "module",
@@ -17,7 +17,44 @@
     "email": "gabrielb102@gmail.com"
   },
   "build": {
-    "appId": "skinsonix.app"
+    "appId": "com.skinsonix.app",
+    "productName": "SkinSonix App",
+    "files": [
+      "dist-electron/**/*",
+      "dist/**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icons/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowElevation": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "SkinSonix App"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "gabrielb102",
+        "repo": "skinsonix",
+        "private": true,
+        "releaseType": "release"
+      }
+    ]
   },
   "debug": {
     "env": {
@@ -43,6 +80,7 @@
     "@vitejs/plugin-vue": "^5.2.1",
     "@vue/tsconfig": "^0.7.0",
     "electron": "33.2.1",
+    "electron-builder": "^25.1.8",
     "electron-rebuild": "^3.2.9",
     "eslint": "^8.57.1",
     "eslint-import-resolver-alias": "^1.1.2",
@@ -58,6 +96,7 @@
     "@primeuix/themes": "^1.0.0",
     "electron-reload": "^2.0.0-alpha.1",
     "electron-squirrel-startup": "^1.0.1",
+    "electron-updater": "^6.3.9",
     "pinia": "^3.0.1",
     "primeicons": "^7.0.0",
     "primevue": "^4.3.1",

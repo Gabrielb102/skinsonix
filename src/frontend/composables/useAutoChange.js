@@ -8,11 +8,11 @@ export function useAutoChange() {
         const phase = computed(() => phaseStore.current);
         const completion = computed(() => phaseStore.completion);
         watch(phase, () => {
-            const startValue = computed(() => phase.value?[startPropertyName] : 0);
-            const endValue = computed(() => phase.value?[endPropertyName] : 0);
+            const startValue = computed(() => phase.value[startPropertyName]);
+            const endValue = computed(() => phase.value[endPropertyName]);
             const totalChange = computed(() => endValue.value - startValue.value);
             const currentProgress = computed(() => totalChange.value * completion.value);
-            const supposedValue = computed(() => Math.round((phase.value[startPropertyName] + currentProgress.value) * multiplier));
+            const supposedValue = computed(() => Math.round((startValue.value + currentProgress.value) * multiplier));
 
             const difference = computed(() => Math.abs(supposedValue.value - controlRef.value));
             const threshold = computed(() => controlRef.value * 0.1);

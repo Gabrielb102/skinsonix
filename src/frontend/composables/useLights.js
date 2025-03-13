@@ -4,6 +4,9 @@ const openWandPort = () => {
   const isPluggedIn = ref(false);
 
   const openPort = () => {
+    window.wand.list().then(ports => {
+      console.log("Ports: ", ports);
+    })
     window.wand.openPort().then((port) => {
       console.log("Successfully opened port: ", port);
       isPluggedIn.value = true;

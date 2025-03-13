@@ -1,6 +1,7 @@
 <script setup>
 import background from "@images/start-screen-background.jpg";
 import logo from "@images/skin-sonix-logo.jpg";
+
 </script>
 
 <template>

@@ -1,6 +1,6 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import {ref, onMounted, watch} from "vue";
+import {useRoute} from "vue-router";
 import FaceDiagram from "@components/FaceDiagram.vue";
 import ControlPanel from "@components/control-panel/ControlPanel.vue";
 
@@ -9,8 +9,39 @@ const id = route.query.treatmentID;
 
 const treatment = ref(null);
 onMounted(async () => {
-  treatment.value = await window.db.getTreatments({id});
+  if (id !== 0) {
+    // If the treatment is not manual
+    if (id === undefined) {
+      // If no treatment is selected, redirect to selection page
+      window.location.href = "/select";
+    }
+    treatment.value = await window.db.getTreatments({id});
+  } else {
+    treatment.value = {
+      TreatmentPhases: [],
+      description: "Treatment focused on lips and jaw area for a radiant smile",
+      id: 3,
+      name: "Super Smile"
+    }
+  }
 });
+
+watch(id, () => {
+  console.log("ID changed to: ", id);
+}, {immediate: true})
+
+watch(treatment, () => {
+  if (treatment.value === null) {
+    treatment.value = {
+      TreatmentPhases: [],
+      description: "Treatment focused on lips and jaw area for a radiant smile",
+      id: 3,
+      name: "Super Smile"
+    }
+    return;
+  }
+  console.log("Treatment changed to: ", treatment.value);
+}, {immediate: true})
 
 
 </script>

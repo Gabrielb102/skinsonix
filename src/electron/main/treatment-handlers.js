@@ -1,12 +1,15 @@
 import {ipcMain} from 'electron';
 import Treatment from '../../db/models/treatment.js';
 import TreatmentPhase from '../../db/models/treatment-phase.js';
+import insertDefaultData from "../../db/init-db.js";
+
+insertDefaultData();
 
 const initTreatmentsHandlers = () => {
   ipcMain.handle('treatments-create', async (event, {name, description, phases}) => {
     const treatment = await Treatment.create({name, description});
     for (const phase of phases) {
-      await TreatmentPhase.create({...phase, TreatmentId: treatment.id});
+      await TreatmentPhase.create({...phase, treatment_id: treatment.id});
     }
     return treatment;
   });

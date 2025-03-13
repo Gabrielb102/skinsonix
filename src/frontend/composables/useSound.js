@@ -1,10 +1,11 @@
-import { ref, watch } from 'vue';
+import {ref, watch} from 'vue';
 
 export function useSound() {
   const audioContext = new window.AudioContext();
   const oscillator = ref(null);
   const gainNode = ref(null);
-  const volumeValue = ref(0);
+  const volume = ref(0);
+  const frequency = ref(620);
   const isOn = ref(false);
 
   const startSound = (frequency = 440) => {
@@ -15,7 +16,7 @@ export function useSound() {
     }
     oscillator.value = audioContext.createOscillator();
     gainNode.value = audioContext.createGain();
-    gainNode.value.gain.value = volumeValue.value / 100;
+    gainNode.value.gain.value = volume.value / 100;
 
     oscillator.value.type = 'sine';
     oscillator.value.frequency.setValueAtTime(frequency, audioContext.currentTime);
@@ -26,11 +27,17 @@ export function useSound() {
 
   const changeVolume = () => {
     if (gainNode.value) {
-      gainNode.value.gain.value = volumeValue.value / 100;
+      gainNode.value.gain.value = volume.value / 100;
     }
   };
+  watch(volume, changeVolume);
 
-  watch(volumeValue, changeVolume);
+  const changeFrequency = () => {
+    if (oscillator.value) {
+      oscillator.value.frequency.setValueAtTime(frequency.value, audioContext.currentTime);
+    }
+  };
+  watch(frequency, changeFrequency);
 
   const stopSound = () => {
     if (!isOn.value) {
@@ -50,6 +57,7 @@ export function useSound() {
   return {
     startSound,
     stopSound,
-    volumeValue
+    volume,
+    frequency
   };
 }

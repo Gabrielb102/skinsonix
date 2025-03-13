@@ -12,10 +12,6 @@ const TreatmentPhase = sequelize.define('TreatmentPhase', {
   treatment_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    references: {
-      model: 'Treatment',
-      key: 'id'
-    }
   },
   area: {
     type: DataTypes.STRING,
@@ -54,17 +50,17 @@ const TreatmentPhase = sequelize.define('TreatmentPhase', {
     allowNull: false
   }
 }, {
+  modelName: 'TreatmentPhase',
   tableName: 'treatment_phases',
-  timestamps: false
+  timestamps: false,
 });
 
 Treatment.hasMany(TreatmentPhase, {
-  foreignKey: 'treatment_id'
-});
-TreatmentPhase.belongsTo(Treatment, {
-  foreignKey: 'treatment_id'
+  foreignKey: 'treatment_id',
 });
 
-TreatmentPhase.sync();
+TreatmentPhase.belongsTo(Treatment, {
+  foreignKey: 'treatment_id',
+});
 
 export default TreatmentPhase;
