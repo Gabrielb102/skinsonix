@@ -18,7 +18,7 @@ const props = defineProps({
 
 // Lights & Sound
 const {redValue, blueValue, isPluggedIn, turnLightsOn, turnLightsOff} = useLights();
-const {volume, frequency, startSound, stopSound} = useSound();
+const {volume, frequency, startSound, stopSound, soundNotify} = useSound();
 
 const turnOn = () => {
   turnLightsOn();
@@ -49,6 +49,7 @@ const showEndMessage = () => {
   console.log("Treatment Ended");
   turnOff();
 };
+
 </script>
 
 <template>
@@ -61,12 +62,13 @@ const showEndMessage = () => {
         :turnOn="turnOn"
         :turnOff="turnOff"
         @end="showEndMessage"
+        @areaSwitch="soundNotify"
     >
       <template v-slot="{phase}">
         <div class="flex flex-col gap-5 w-full px-12 justify-center items-center">
-          <IntensitySlider v-model="redValue" label="Red Intensity" :max="255"/>
-          <IntensitySlider v-model="blueValue" label="Blue Intensity" :max="255"/>
-          <IntensitySlider v-model="volume" label="Volume"/>
+          <IntensitySlider v-model="redValue" label="Red Intensity" :max="255" :buttonStep="5"/>
+          <IntensitySlider v-model="blueValue" label="Blue Intensity" :max="255" :buttonStep="5"/>
+          <IntensitySlider v-model="volume" label="Volume" :buttonStep="5"/>
         </div>
       </template>
     </component>

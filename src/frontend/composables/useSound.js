@@ -5,29 +5,46 @@ export function useSound() {
   const oscillator = ref(null);
   const gainNode = ref(null);
   const volume = ref(0);
-  const frequency = ref(620);
+  const frequency = ref(630);
   const isOn = ref(false);
 
-  const startSound = (frequency = 440) => {
-    if (isOn.value) {
-      return;
-    } else {
-      isOn.value = true;
-    }
+  const fadeTime = 1000; // milliseconds
+
+  const startSound = () => {
+    if (isOn.value) return;
+
+    isOn.value = true;
+
+    // Create audio nodes first
     oscillator.value = audioContext.createOscillator();
     gainNode.value = audioContext.createGain();
-    gainNode.value.gain.value = volume.value / 100;
 
+    // Set up connections
     oscillator.value.type = 'sine';
-    oscillator.value.frequency.setValueAtTime(frequency, audioContext.currentTime);
+    oscillator.value.frequency.setValueAtTime(frequency.value, audioContext.currentTime);
     oscillator.value.connect(gainNode.value);
     gainNode.value.connect(audioContext.destination);
+
+    // Start with zero volume
+    gainNode.value.gain.setValueAtTime(0, audioContext.currentTime);
+
+    // Start the oscillator
     oscillator.value.start();
+
+    // Then fade in after a 500ms delay
+    setTimeout(() => {
+      const now = audioContext.currentTime;
+      gainNode.value.gain.setValueAtTime(0, now);
+      gainNode.value.gain.linearRampToValueAtTime(volume.value / 100, now + fadeTime/1000);
+    }, 500);
   };
 
   const changeVolume = () => {
-    if (gainNode.value) {
-      gainNode.value.gain.value = volume.value / 100;
+    if (gainNode.value && isOn.value) {
+      // Don't interrupt fade operations
+      const now = audioContext.currentTime;
+      gainNode.value.gain.setValueAtTime(gainNode.value.gain.value, now);
+      gainNode.value.gain.linearRampToValueAtTime(volume.value / 100, now + 0.05);
     }
   };
   watch(volume, changeVolume);
@@ -40,24 +57,43 @@ export function useSound() {
   watch(frequency, changeFrequency);
 
   const stopSound = () => {
-    if (!isOn.value) {
-      return;
-    } else {
-      isOn.value = false;
+    if (!isOn.value) return;
+
+    isOn.value = false;
+
+    if (oscillator.value && gainNode.value) {
+      // Fade out
+      const now = audioContext.currentTime;
+      gainNode.value.gain.setValueAtTime(gainNode.value.gain.value, now);
+      gainNode.value.gain.linearRampToValueAtTime(0, now + fadeTime/1000);
+
+      // Stop and disconnect after fade completes
+      setTimeout(() => {
+        if (oscillator.value) {
+          oscillator.value.stop();
+          oscillator.value.disconnect();
+          oscillator.value = null;
+        }
+        if (gainNode.value) {
+          gainNode.value.disconnect();
+          gainNode.value = null;
+        }
+      }, fadeTime);
     }
-    if (oscillator.value) {
-      oscillator.value.stop();
-      oscillator.value.disconnect();
-      gainNode.value.disconnect();
-      oscillator.value = null;
-      gainNode.value = null;
-    }
+  };
+
+  const soundNotify = () => {
+    stopSound();
+    setTimeout(() => {
+      startSound();
+    }, (fadeTime * 2));
   };
 
   return {
     startSound,
     stopSound,
     volume,
-    frequency
+    frequency,
+    soundNotify
   };
 }

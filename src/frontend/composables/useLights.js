@@ -35,7 +35,7 @@ export function useLights() {
   // function to write new values to wand
   const writeWandLight = (redValue, blueValue) => {
 
-    if (!isOn.value) {
+    if (!isOn.value && (redValue !== 0 && blueValue !== 0)) {
       return;
     }
 

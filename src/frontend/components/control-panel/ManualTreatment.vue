@@ -43,7 +43,6 @@
   // Static time display - always showing 0:00
   const staticTime = 0;
 
-  console.log("manual treatment component loaded");
   </script>
 
 <template>

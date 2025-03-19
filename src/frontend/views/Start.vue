@@ -1,6 +1,18 @@
 <script setup>
+import { watch } from "vue";
 import background from "@images/start-screen-background.jpg";
 import logo from "@images/skin-sonix-logo.jpg";
+import { useLights } from "@frontend/composables/useLights";
+
+const { turnLightsOff, isPluggedIn } = useLights();
+
+watch(isPluggedIn, () => {
+  console.log("isPluggedIn: ", isPluggedIn.value);
+  if (isPluggedIn.value) {
+    console.log("Turning lights off");
+    turnLightsOff();
+  }
+}, { immediate: true });
 
 </script>
 

@@ -29,6 +29,7 @@ const sectionTime = computed(() => props.phases[0].duration);
 
 // <editor-fold desc="Controlling timers">--------------------------------------
 
+const emits = defineEmits(["end", "areaSwitch"]);
 const bigTimeDisplay = ref(null);
 const sectionTimeDisplay = ref(null);
 const isStarted = ref(false);
@@ -76,6 +77,7 @@ const startNextSection = () => {
     phaseIndex.value++;
   if (currentPhase && !isStopped.value) {
     sectionTimeDisplay['value']?.start(currentPhase['duration']);
+    emits("areaSwitch");
   } else {
     stop();
   }
@@ -86,7 +88,7 @@ const {changeAreaStatus, resetDiagram} = useDiagram();
 watch(currentPhase, (newPhase, prevPhase) => {
   phaseStore.$patch({current: newPhase});
   if (prevPhase) {
-    changeAreaStatus(prevPhase['area'], 'default');
+    changeAreaStatus(prevPhase['area'], 'done');
   }
   if (newPhase) {
     changeAreaStatus(newPhase['area'], 'active');
@@ -99,7 +101,6 @@ watch(currentPhase, (newPhase, prevPhase) => {
 
 // <editor-fold desc="End">---------------------------------------------------
 
-const emits = defineEmits(["end"]);
 const end = () => {
   console.log("Big Timer ended apparently");
   isStopped.value = true;

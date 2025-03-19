@@ -26,10 +26,6 @@ onMounted(async () => {
   }
 });
 
-watch(id, () => {
-  console.log("ID changed to: ", id);
-}, {immediate: true})
-
 watch(treatment, () => {
   if (treatment.value === null) {
     treatment.value = {
@@ -40,7 +36,6 @@ watch(treatment, () => {
     }
     return;
   }
-  console.log("Treatment changed to: ", treatment.value);
 }, {immediate: true})
 
 
